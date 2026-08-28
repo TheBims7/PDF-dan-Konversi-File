@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combine PDF and Converter Image</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title bg-primary"><i class="bi bi-arrow-repeat"></i> Menggabungkan dan Konversi File <span>Gambar</span></h1>
+        <div class="deskripsi">
+             <p>Menggabungkan PDF dalam satu file, mengubah ukuran gambar, serta kompres gambar.</p>
+        </div>
+        <div class="content">
+            <div class="card card-utama">
+                <i class="bi bi-filetype-pdf text-danger"></i>
+                <h4>Gabungkan PDF</h4>
+                <p>Menjadikan beberapa file PDF menjadi 1 File PDF</p>
+            </div>
+            <div class="card card-utama">
+                <i class="bi bi-aspect-ratio text-primary"></i>
+                <h4>Ubah Ukuran</h4>
+                <p>Mengubah lebar dan panjang gambar atau foto</p>
+            </div>
+            <div class="card card-utama">
+                <i class="bi bi-arrows-angle-contract text-success"></i>
+                <h4>Kompres Gambar</h4>
+                <p>Memperkecil ukuran file Gambar atau Foto dalam satuan byte</p>
+            </div>
+        </div>
+        <footer>
+            <p>&copy; 2026 Bima</p>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="converterModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-arrow-repeat me-2"></i>
+                        <span id="modalTitle">Konversi File</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Converter Info -->
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle-fill text-primary me-1 fs-5"></i>
+                        <span id="converterDescription">Pilih file untuk dikonversi</span>
+                    </div>
+                    
+                    <!-- Drop Zone -->
+                    <div class="drop-zone text-center border rounded-3 p-5" id="dropZone">
+                        <div class="mb-3">
+                            <i class="bi bi-cloud-arrow-up display-1 text-primary cloud-icon"></i>
+                        </div>
+                        <h5 class="mb-2">Seret & Lepas atau Klik File di Sini</h5>
+                        <button class="btn btn-primary btn-lg" id="browseBtn">
+                            <i class="bi bi-files me-2"></i>Pilih File
+                        </button>
+                        <input type="file" id="fileInput" class="d-none" multiple>
+                        <p class="text-muted mt-3 mb-0">
+                            <small>Format yang didukung: <span id="supportedFormats">-</span></small>
+                        </p>
+                    </div>
+
+                    <!-- File List -->
+                    <div class="mt-4" id="fileListContainer" style="display: none;">
+                        <h6 class="mb-3">
+                            <i class="bi bi-files me-2"></i>
+                            File Terpilih (<span id="fileCount">0</span>)
+                        </h6>
+                        <div id="fileList"></div>
+                    </div>
+
+                    <!-- Quality Options (untuk Kompres Gambar) -->
+                    <div id="qualityOptions" class="mt-3" style="display: none;">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">
+                                    <i class="bi bi-sliders me-2"></i>Kualitas Kompresi Gambar:
+                                </h6>
+                                <input type="range" class="form-range" id="qualitySlider" 
+                                       min="10" max="100" value="70">
+                                <div class="text-center mb-3">
+                                    <span class="badge bg-primary fs-6" id="qualityValue">70%</span>
+                                </div>
+                                
+                                <!-- Size Preview -->
+                                <div id="sizePreview" class="mt-3" style="display: none;">
+                                    <div class="alert alert-warning">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-file-earmark me-1"></i>Ukuran Original :</span>
+                                            <strong id="originalSizePreview">-</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span><i class="bi bi-file-earmark-zip me-1"></i>Estimasi Hasil :</span>
+                                            <strong id="estimatedSize">-</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span><i class="bi bi-graph-down-arrow me-1"></i>Pengurangan Kualitas :</span>
+                                            <strong id="sizeReduction" class="text-success">-</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resize Options (untuk Ubah Ukuran) -->
+                    <div id="resizeOptions" class="mt-3" style="display: none;">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">
+                                    <i class="bi bi-arrows-angle-expand me-2"></i>Dimensi Baru :
+                                </h6>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <label class="form-label">Lebar <span>Gambar/Foto</span> (px):</label>
+                                        <input type="number" class="form-control" id="resizeWidth" 
+                                               min="1" placeholder="Lebar">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">Tinggi <span>Gambar/Foto</span> (px):</label>
+                                        <input type="number" class="form-control" id="resizeHeight" 
+                                               min="1" placeholder="Tinggi">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check">
+                                            <input class="check" type="checkbox" 
+                                                   id="keepAspectRatio" checked>
+                                            <label class="form-check-label mx-2" for="keepAspectRatio">
+                                                Pertahankan rasio aspek
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress mt-4" id="progressContainer" 
+                         style="display: none; height: 30px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             id="progressBar" role="progressbar" style="width: 0%">
+                            0%
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Batal
+                    </button>
+                    <button class="btn btn-success" id="convertBtn" disabled>
+                        <i class="bi bi-gear me-1"></i> Konversi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT MODAL -->
+    <div class="modal fade" id="resultModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Konversi Berhasil!
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="result-icon mb-3">
+                        <i class="bi bi-file-earmark-check display-1 text-success"></i>
+                    </div>
+                    <h5 id="resultFileName">file.pdf</h5>
+                    <p class="text-muted" id="resultFileSize">Size: 0 KB</p>
+                    
+                    <!-- Multiple Files Preview -->
+                    <div id="multipleFilesPreview" class="mt-3" style="display: none;">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <span id="multipleFilesCount">0 file berhasil dibuat</span>
+                        </div>
+                        <div id="multipleFilesList" class="text-start"></div>
+                    </div>
+                    
+                    <button class="btn btn-success btn-lg mt-3" id="downloadBtn">
+                        <i class="bi bi-download me-2"></i>Download File
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-content text-center">
+            <div class="spinner-border text-primary mb-3" 
+                 style="width: 3rem; height: 3rem;"></div>
+            <h5 class="mb-0" id="loadingText">Memproses...</h5>
+            <p class="text-muted mt-2 mb-0" id="loadingDetail"></p>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+</html>
