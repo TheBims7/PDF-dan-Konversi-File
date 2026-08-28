@@ -1,7 +1,6 @@
 :root {
     --color-utama : #e7e7e7;
     --bg-primary : #f8f9fa;
-    /* --border : #0509fc; */
     --bg-secondary: #ffffff;
     --bg-dropzone: #f8f9fa;
     --border-color: #dee2e6;
@@ -213,12 +212,6 @@ footer p {
 
     .drop-zone button {
         font-size: 15px;
-    }
-}
-
-@media(max-width: 370px){
-    .deskripsi {
-        font-size: 13px;
     }
 }
 
