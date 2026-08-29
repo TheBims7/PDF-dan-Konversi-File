@@ -696,9 +696,9 @@ class ConverterApp {
         toast.className = `custom-toast ${type}`;
         
         const iconMap = {
-            success: 'bi-check-circle',
+            success: 'bi-check-circle-fill',
             error: 'bi-exclamation-circle',
-            warning: 'bi-exclamation-triangle',
+            warning: 'bi-exclamation-triangle-fill',
             info: 'bi-info-circle'
         };
         
