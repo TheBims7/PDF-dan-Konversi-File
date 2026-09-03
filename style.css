@@ -255,8 +255,12 @@ footer p {
 }
 
 @keyframes toastProgress {
-    from { width: 100%; }
-    to { width: 0%; }
+    from { 
+        width: 100%;
+    }
+    to { 
+        width: 0%; 
+    }
 }
 
 @keyframes slideInRight {
@@ -422,8 +426,12 @@ footer p {
 }
 
 @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(13, 110, 253, 0.2); }
-    50% { box-shadow: 0 0 40px rgba(13, 110, 253, 0.4); }
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(13, 110, 253, 0.2); 
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(13, 110, 253, 0.4); 
+    }
 }
 
 .drop-zone .cloud-icon {
