@@ -577,20 +577,22 @@ class ConverterApp {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         
-        const mimeType = imageFile.type === 'image/png' ? 'image/png' : 'image/jpeg';
         const blob = await new Promise(resolve => {
-            canvas.toBlob(resolve, mimeType, quality);
+            canvas.toBlob(resolve, 'image/jpeg', quality);
         });
         
-        const extension = mimeType === 'image/png' ? 'png' : 'jpg';
-        const fileName = imageFile.name.replace(/\.[^.]+$/, '') + `-compressed.${extension}`;
+        const originalSize = imageFile.size;
+        const compressedSize = blob.size;
+        const reduction = ((originalSize - compressedSize) / originalSize) * 100;
+        
+        console.log(`Image compressed: ${this.formatFileSize(originalSize)} → ${this.formatFileSize(compressedSize)} (${reduction.toFixed(1)}% reduction)`);
         
         return {
-            fileName: fileName,
+            fileName: imageFile.name.replace(/\.[^.]+$/, '') + '-compressed.jpg',
             fileSize: blob.size,
             blob: blob,
-            mimeType: mimeType
-        };
+            mimeType: 'image/jpeg'
+        }
     }
 
     // ============================================================
