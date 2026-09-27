@@ -86,14 +86,13 @@ body {
     text-align: center;
     border-radius: 10px;
     cursor: pointer;
-    background: #94c6ff63;
     box-shadow: 0 0 5px 5px rgba(94, 93, 93, 0.1);
     transition: .3s ease-in-out;
 }
 
 .card-utama:hover {
     transform: translateY(-10px);
-    background: #deeefd;
+    background: #deeefd !important;
     box-shadow: 0 0 5px 5px rgba(3, 120, 253, 0.808);
 }
 
@@ -121,7 +120,6 @@ footer {
     width: 100%;
     text-align: center;
     border-top: 1px solid #a7a7a7;
-    background-color: #deeefd;
 }
 
 footer p {
@@ -182,6 +180,14 @@ footer p {
 }
 
 @media(max-width: 405px){
+    body {
+        padding: 0px;
+    }
+
+    .container {
+        border-radius: 0;
+    }
+    
     .title {
         padding: 18px;
         height: 80px;
